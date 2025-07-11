@@ -1,5 +1,7 @@
 import { palabrasPorNivel } from "./palabras.js";
 
+let resultados = [];
+
 export function cargarAhorcado() {
     let nivel = 1;
     let vidasIniciales = 5;
@@ -28,8 +30,12 @@ export function cargarAhorcado() {
     timerElemento.className = "temporizador";
     contenedor.appendChild(timerElemento);
 
+    const resumenDiv = document.createElement("div");
+    contenedor.appendChild(resumenDiv);
+
     function iniciarNivel() {
         letrasDiv.innerHTML = "";
+        resumenDiv.innerHTML = "";
         titulo.textContent = `Nivel ${nivel}`;
 
         let palabras = palabrasPorNivel[nivel] || palabrasPorNivel[5];
@@ -37,7 +43,10 @@ export function cargarAhorcado() {
         let palabraOculta = Array(palabra.length).fill("_");
         let letrasUsadas = [];
         let vidas = vidasIniciales;
-        let tiempo = Math.max(20 - nivel * 2, 5); // Tiempo baja con cada nivel
+        const TIEMPO_BASE = 80;
+        let tiempo = Math.max(TIEMPO_BASE - nivel * 2, 5);
+        let tiempoInicial = tiempo;
+
         let intervalo;
 
         palabraElemento.textContent = palabraOculta.join(" ");
@@ -49,8 +58,8 @@ export function cargarAhorcado() {
             actualizarTemporizador(tiempo);
             if (tiempo <= 0) {
                 clearInterval(intervalo);
-                alert("¡Se acabó el tiempo!");
-                reiniciarJuego();
+                guardarResultado("Tiempo agotado", palabra, nivel, tiempoInicial, vidas);
+                mostrarResumen();
             }
         }, 1000);
 
@@ -79,6 +88,7 @@ export function cargarAhorcado() {
 
                 if (!palabraOculta.includes("_")) {
                     clearInterval(intervalo);
+                    guardarResultado("Correcto", palabra, nivel, tiempoInicial - tiempo, vidas);
                     palabrasGanadas++;
                     if (palabrasGanadas >= 3) {
                         alert("¡Subiste de nivel!");
@@ -90,8 +100,8 @@ export function cargarAhorcado() {
                     iniciarNivel();
                 } else if (vidas === 0) {
                     clearInterval(intervalo);
-                    alert(`Perdiste. La palabra era: ${palabra}`);
-                    reiniciarJuego();
+                    guardarResultado("Sin vidas", palabra, nivel, tiempoInicial - tiempo, vidas);
+                    mostrarResumen();
                 }
             });
 
@@ -107,10 +117,68 @@ export function cargarAhorcado() {
         timerElemento.textContent = `⏱️ ${tiempo}s`;
     }
 
-    function reiniciarJuego() {
-        nivel = 1;
-        palabrasGanadas = 0;
-        iniciarNivel();
+    function guardarResultado(estado, palabra, nivel, tiempoUsado, vidasRestantes) {
+        resultados.push({
+            palabra,
+            nivel,
+            estado,
+            tiempoUsado,
+            vidasRestantes
+        });
+    }
+
+    function mostrarResumen() {
+        letrasDiv.innerHTML = "";
+        palabraElemento.textContent = "";
+        titulo.textContent = "🏁 Fin del juego";
+        vidasElemento.textContent = "";
+        timerElemento.textContent = "";
+
+        const tabla = document.createElement("table");
+        tabla.innerHTML = `
+            <tr>
+                <th>Nivel</th>
+                <th>Palabra</th>
+                <th>Estado</th>
+                <th>Tiempo usado</th>
+                <th>Vidas restantes</th>
+            </tr>
+        `;
+        resultados.forEach(r => {
+            const fila = document.createElement("tr");
+            fila.innerHTML = `
+                <td>${r.nivel}</td>
+                <td>${r.palabra}</td>
+                <td>${r.estado}</td>
+                <td>${r.tiempoUsado}s</td>
+                <td>${r.vidasRestantes}</td>
+            `;
+            tabla.appendChild(fila);
+        });
+
+        const botonDescargar = document.createElement("button");
+        botonDescargar.textContent = "📥 Descargar resultados";
+        botonDescargar.onclick = () => descargarCSV();
+
+        resumenDiv.appendChild(tabla);
+        resumenDiv.appendChild(botonDescargar);
+    }
+
+    function descargarCSV() {
+        const encabezado = "Nivel,Palabra,Estado,Tiempo usado,Vidas restantes\n";
+        const filas = resultados.map(r =>
+            `${r.nivel},${r.palabra},${r.estado},${r.tiempoUsado},${r.vidasRestantes}`
+        ).join("\n");
+
+        const csv = encabezado + filas;
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "resultados_ahorcado.csv";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 
     iniciarNivel();

@@ -1,99 +1,149 @@
 body {
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    background: radial-gradient(circle at center, #1f1f1f 0%, #121212 100%);
-    background-attachment: fixed;
-    background-size: cover;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    color: #f5f5f5;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: radial-gradient(circle at center, #1f1f1f 0%, #121212 100%);
+  background-attachment: fixed;
+  background-size: cover;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  color: #f5f5f5;
 }
 
 #root {
-    max-width: 750px;
-    width: 90%;
-    margin-top: 2rem;
-    background-color: rgba(33, 33, 33, 0.95);
-    border-radius: 1rem;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
-    padding: 2rem;
+  max-width: 750px;
+  width: 90%;
+  margin-top: 2rem;
+  background-color: rgba(33, 33, 33, 0.95);
+  border-radius: 1rem;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+  padding: 2rem;
 }
 
 /* Título General */
 .titulo-general {
-    text-align: center;
-    font-size: 3rem;
-    margin-top: 1rem;
-    margin-bottom: 2rem;
-    color: #00ffff;
-    text-shadow: 0 0 10px #00ffffaa;
+  text-align: center;
+  font-size: 3rem;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  color: #00ffff;
+  text-shadow: 0 0 10px #00ffffaa;
 }
-
 
 .ahorcado-container {
-    background-color: #fff;
-    border-radius: 1rem;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    padding: 2rem;
-    position: relative;
-  }
-  
-  .titulo-ahorcado {
-    font-size: 2rem;
-    color: #333;
-    margin-bottom: 1rem;
-    text-align: center;
-  }
-  
-  .palabra-oculta {
-    font-size: 2.5rem;
-    text-align: center;
-    letter-spacing: 0.5rem;
-    margin: 2rem 0;
-    color: #333;
-  }
-  
-  .letra {
-    font-size: 2rem;
-    margin: 0 0.3rem;
-    color: black; /* <-- Esto hace que se vea sobre el fondo blanco */
-    font-weight: bold;
+  background-color: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  position: relative;
+  color: #111;
 }
 
-  
-  .letras button {
-    padding: 0.6rem 1rem;
-    font-size: 1rem;
-    border: none;
-    border-radius: 0.5rem;
-    background-color: #dbeafe;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .letras button:hover:not(:disabled) {
-    background-color: #60a5fa;
-    color: rgb(236, 232, 232);
-  }
-  
-  .vidas, .temporizador {
-    font-size: 1.2rem;
-    font-weight: bold;
-    position: absolute;
-    top: 1rem;
-  }
-  
-  .vidas {
-    right: 2rem;
-    color: #ef4444;
-  }
-  
-  .temporizador {
-    left: 2rem;
-    color: #10b981;
-  }
-  
-  
+.titulo-ahorcado {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.palabra-oculta {
+  font-size: 2.5rem;
+  text-align: center;
+  letter-spacing: 0.5rem;
+  margin: 2rem 0;
+  color: #333;
+}
+
+.letra {
+  font-size: 2rem;
+  margin: 0 0.3rem;
+  color: black;
+  font-weight: bold;
+}
+
+.letras {
+  text-align: center;
+}
+
+.letras button {
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #111; /* Texto negro visible */
+  border: none;
+  border-radius: 0.5rem;
+  background-color: #dbeafe; /* Azul claro */
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin: 0.2rem;
+}
+
+.letras button:hover:not(:disabled) {
+  background-color: #60a5fa;
+  color: white;
+}
+
+.letras button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.vidas, .temporizador {
+  font-size: 1.2rem;
+  font-weight: bold;
+  position: absolute;
+  top: 1rem;
+}
+
+.vidas {
+  right: 2rem;
+  color: #ef4444;
+}
+
+.temporizador {
+  left: 2rem;
+  color: #10b981;
+}
+
+/* Tabla de resultados */
+table {
+  width: 100%;
+  margin-top: 1rem;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  text-align: center;
+}
+
+table th {
+  background-color: #e2e8f0;
+  color: #1f2937; /* texto oscuro */
+  font-weight: bold;
+}
+
+table td {
+  color: #111;
+}
+
+/* Botón de descarga */
+button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #2563eb;
+}
