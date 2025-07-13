@@ -6,6 +6,7 @@ export function cargarAhorcado() {
     let nivel = 1;
     let vidasIniciales = 5;
     let palabrasGanadas = 0;
+    let puntos = 0;
 
     const contenedor = document.createElement("div");
     contenedor.className = "ahorcado-container";
@@ -30,6 +31,10 @@ export function cargarAhorcado() {
     timerElemento.className = "temporizador";
     contenedor.appendChild(timerElemento);
 
+    const puntosElemento = document.createElement("div");
+    puntosElemento.className = "puntos";
+    contenedor.appendChild(puntosElemento);
+
     const resumenDiv = document.createElement("div");
     contenedor.appendChild(resumenDiv);
 
@@ -52,6 +57,11 @@ export function cargarAhorcado() {
         palabraElemento.textContent = palabraOculta.join(" ");
         actualizarVidas(vidas);
         actualizarTemporizador(tiempo);
+        actualizarPuntos();
+
+        function actualizarPuntos() {
+            puntosElemento.textContent = `⭐ Puntos: ${puntos}`;
+        }
 
         intervalo = setInterval(() => {
             tiempo--;
@@ -88,6 +98,8 @@ export function cargarAhorcado() {
 
                 if (!palabraOculta.includes("_")) {
                     clearInterval(intervalo);
+                    puntos += 10;
+                    actualizarPuntos();
                     guardarResultado("Correcto", palabra, nivel, tiempoInicial - tiempo, vidas);
                     palabrasGanadas++;
                     if (palabrasGanadas >= 3) {
@@ -123,7 +135,8 @@ export function cargarAhorcado() {
             nivel,
             estado,
             tiempoUsado,
-            vidasRestantes
+            vidasRestantes,
+            puntos
         });
     }
 
@@ -137,21 +150,26 @@ export function cargarAhorcado() {
         const tabla = document.createElement("table");
         tabla.innerHTML = `
             <tr>
+                <th>Lugar</th>
                 <th>Nivel</th>
                 <th>Palabra</th>
                 <th>Estado</th>
                 <th>Tiempo usado</th>
                 <th>Vidas restantes</th>
+                <th>Puntos</th>
             </tr>
         `;
-        resultados.forEach(r => {
+
+        resultados.forEach((r, index) => {
             const fila = document.createElement("tr");
             fila.innerHTML = `
+                <td>${index + 1}</td>
                 <td>${r.nivel}</td>
                 <td>${r.palabra}</td>
                 <td>${r.estado}</td>
                 <td>${r.tiempoUsado}s</td>
                 <td>${r.vidasRestantes}</td>
+                <td>${r.puntos}</td>
             `;
             tabla.appendChild(fila);
         });
@@ -165,9 +183,9 @@ export function cargarAhorcado() {
     }
 
     function descargarCSV() {
-        const encabezado = "Nivel,Palabra,Estado,Tiempo usado,Vidas restantes\n";
-        const filas = resultados.map(r =>
-            `${r.nivel},${r.palabra},${r.estado},${r.tiempoUsado},${r.vidasRestantes}`
+        const encabezado = "Lugar,Nivel,Palabra,Estado,Tiempo usado,Vidas restantes,Puntos\n";
+        const filas = resultados.map((r, index) =>
+            `${index + 1},${r.nivel},${r.palabra},${r.estado},${r.tiempoUsado},${r.vidasRestantes},${r.puntos}`
         ).join("\n");
 
         const csv = encabezado + filas;
